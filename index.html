@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#8b5a2b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Umbra Quote">
+<title>Umbra Quotation — Amar Furniture</title>
+<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlVtYnJhIFF1b3RhdGlvbiIsCiAgInNob3J0X25hbWUiOiAiVW1icmEiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZkZjhmMCIsCiAgInRoZW1lX2NvbG9yIjogIiM1YjNhMWYiCn0=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&family=Tiro+Devanagari+Marathi&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --wood-dark: #8b5a2b;
+  --wood-mid: #b07a4a;
+  --wood-light: #d4a979;
+  --cream: #fffdf7;
+  --cream-2: #faf2e0;
+  --paper: #ffffff;
+  --ink: #3d2817;
+  --muted: #8a7a64;
+  --gold: #c89b3a;
+  --gold-light: #e0bc5e;
+  --accent: #a04040;
+  --green: #5a8c3a;
+  --shadow: rgba(139, 90, 43, 0.08);
+  --shadow-deep: rgba(139, 90, 43, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Crimson Pro', 'Georgia', serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at top, rgba(212, 169, 121, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom, rgba(200, 155, 58, 0.05), transparent 50%),
+    var(--cream);
+  background-attachment: fixed;
+  padding-bottom: 60px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.header { text-align: center; padding: 20px 16px 24px; }
+.ornament { font-size: 14px; letter-spacing: 8px; color: var(--gold); margin-bottom: 4px; }
+.brand { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 5px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+.title { font-family: 'Cinzel', serif; font-size: clamp(34px, 8vw, 52px); font-weight: 600; color: var(--wood-dark); letter-spacing: 2px; margin: 6px 0 2px; line-height: 1; }
+.title-mark { color: var(--gold); font-style: italic; }
+.subtitle { font-size: 14px; color: var(--muted); font-style: italic; }
+.tri-label { display: flex; justify-content: center; gap: 10px; margin-top: 8px; font-size: 12px; color: var(--wood-mid); }
+.tri-label span { font-family: 'Tiro Devanagari Marathi', 'Crimson Pro', serif; }
+.tri-label .sep { color: var(--gold); }
+
+.mode-tabs { display: flex; gap: 4px; background: var(--cream-2); padding: 4px; border-radius: 999px; max-width: 360px; margin: 12px auto 20px; border: 1px solid rgba(139, 90, 43, 0.2); }
+.mode-tab { flex: 1; padding: 9px 14px; border: none; background: transparent; font-family: inherit; font-size: 13px; color: var(--muted); cursor: pointer; border-radius: 999px; letter-spacing: 1px; transition: all 0.3s; text-transform: uppercase; }
+.mode-tab.active { background: var(--wood-dark); color: var(--paper); box-shadow: 0 2px 8px var(--shadow-deep); }
+.mode-tab .lock { font-size: 10px; margin-left: 4px; opacity: 0.6; }
+
+.card {
+  background: var(--paper);
+  border-radius: 4px;
+  padding: 24px 20px;
+  box-shadow: 0 4px 24px var(--shadow), 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid rgba(139, 90, 43, 0.15);
+  position: relative;
+  margin-bottom: 18px;
+}
+.card::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(184, 134, 11, 0.2); border-radius: 2px; pointer-events: none; }
+.card-title { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 4px; }
+.card-heading { font-family: 'Crimson Pro', serif; font-size: 24px; color: var(--wood-dark); margin-bottom: 18px; font-weight: 700; }
+
+.section + .section { margin-top: 22px; }
+.label { display: block; font-size: 13px; color: var(--wood-dark); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px; }
+.label-tri { display: block; font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; font-style: italic; }
+.input-row { display: flex; gap: 10px; }
+.input-group { flex: 1; }
+.input-wrap { position: relative; }
+
+input[type="number"], input[type="password"], input[type="text"], input[type="tel"] {
+  width: 100%;
+  padding: 11px 56px 11px 12px;
+  font-family: inherit;
+  font-size: 17px;
+  background: var(--cream);
+  border: 1px solid rgba(139, 90, 43, 0.3);
+  border-radius: 2px;
+  color: var(--ink);
+  transition: all 0.2s;
+}
+input:focus { outline: none; border-color: var(--wood-mid); box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15); }
+.unit { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); pointer-events: none; font-style: italic; }
+.unit-strong {
+  font-style: normal !important;
+  font-family: 'Cinzel', serif;
+  font-size: 13px !important;
+  letter-spacing: 1.5px;
+  color: var(--paper) !important;
+  background: var(--wood-dark);
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.quick-pick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.quick-pick button {
+  flex: 1; min-width: 90px; padding: 7px 10px;
+  font-family: inherit; font-size: 12px;
+  background: transparent; border: 1px dashed rgba(139, 90, 43, 0.4);
+  color: var(--wood-mid); border-radius: 2px; cursor: pointer;
+  letter-spacing: 0.5px; transition: all 0.2s;
+}
+.quick-pick button:hover { background: var(--cream-2); border-style: solid; border-color: var(--wood-mid); }
+
+/* Builder option groups */
+.builder-grid { background: var(--cream); padding: 14px; border-radius: 3px; border: 1px solid rgba(139, 90, 43, 0.2); display: flex; flex-direction: column; gap: 12px; }
+.builder-row { display: grid; grid-template-columns: 80px 1fr; gap: 10px; align-items: center; }
+@media (max-width: 480px) { .builder-row { grid-template-columns: 1fr; gap: 6px; } }
+.builder-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: var(--wood-mid); text-transform: uppercase; }
+.builder-label-tri { display: block; font-family: 'Crimson Pro', serif; font-size: 11px; letter-spacing: 0; color: var(--muted); font-style: italic; margin-top: 1px; text-transform: none; }
+
+.option-group { display: flex; gap: 6px; }
+.option-pill {
+  flex: 1; padding: 9px 10px;
+  background: var(--paper); border: 1.5px solid rgba(139, 90, 43, 0.25);
+  border-radius: 999px; font-family: 'Crimson Pro', serif;
+  font-size: 14px; color: var(--ink); cursor: pointer;
+  transition: all 0.2s; text-align: center; user-select: none; font-weight: 600;
+}
+.option-pill:hover { border-color: var(--wood-mid); }
+.option-pill.active { background: var(--wood-dark); color: var(--paper); border-color: var(--wood-dark); box-shadow: 0 2px 6px var(--shadow); }
+.option-pill.disabled { opacity: 0.35; cursor: not-allowed; background: var(--cream-2); }
+.option-pill.disabled:hover { border-color: rgba(139, 90, 43, 0.25); }
+
+.builder-preview {
+  margin-top: 12px; padding: 10px 14px;
+  background: rgba(184, 134, 11, 0.08); border-left: 3px solid var(--gold);
+  border-radius: 2px; font-size: 13px; color: var(--wood-dark);
+  font-style: italic; min-height: 38px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+}
+.builder-preview strong { font-style: normal; font-family: 'Cinzel', serif; font-size: 13px; }
+.preview-price { font-family: 'Cinzel', serif; font-size: 16px; color: var(--wood-dark); font-weight: 700; font-style: normal; }
+
+/* Buttons */
+.btn {
+  width: 100%; padding: 14px; font-family: 'Cinzel', serif;
+  font-size: 13px; letter-spacing: 3px; background: var(--wood-dark);
+  color: var(--paper); border: none; border-radius: 2px; cursor: pointer;
+  text-transform: uppercase; transition: all 0.2s; margin-top: 14px;
+  box-shadow: 0 2px 8px var(--shadow-deep);
+}
+.btn:hover { background: var(--ink); transform: translateY(-1px); box-shadow: 0 4px 12px var(--shadow-deep); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-secondary { background: transparent; color: var(--wood-dark); border: 1px solid var(--wood-mid); box-shadow: none; }
+.btn-secondary:hover { background: var(--cream-2); color: var(--wood-dark); }
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 28px 16px; color: var(--muted); font-style: italic; font-size: 14px; }
+.empty-state .empty-icon { font-size: 32px; color: var(--gold); margin-bottom: 6px; opacity: 0.5; }
+
+.list-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.list-count { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+
+/* Combo cards */
+.combo-list { display: flex; flex-direction: column; gap: 12px; }
+.combo-card {
+  background: var(--paper); border: 1px solid rgba(139, 90, 43, 0.25);
+  border-radius: 3px; padding: 14px 14px 12px;
+  position: relative; box-shadow: 0 2px 8px var(--shadow); transition: all 0.2s;
+}
+.combo-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, var(--gold), var(--wood-mid)); }
+.combo-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.combo-num { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; }
+.combo-title { font-family: 'Crimson Pro', serif; font-size: 18px; color: var(--wood-dark); font-weight: 700; margin-top: 1px; line-height: 1.2; }
+.combo-price { font-family: 'Cinzel', serif; font-size: 19px; color: var(--wood-dark); font-weight: 700; text-align: right; white-space: nowrap; }
+
+.combo-toggles { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.toggle-pill {
+  font-family: 'Crimson Pro', serif; font-size: 12px;
+  padding: 4px 10px; background: var(--cream-2);
+  color: var(--wood-mid); border: 1px solid rgba(139, 90, 43, 0.25);
+  border-radius: 999px; cursor: pointer; user-select: none;
+  transition: all 0.15s; font-weight: 600;
+}
+.toggle-pill:hover { border-color: var(--wood-mid); }
+.toggle-pill.on { background: var(--wood-dark); color: var(--paper); border-color: var(--wood-dark); }
+.toggle-pill.disabled { opacity: 0.35; cursor: not-allowed; }
+.toggle-pill.disabled:hover { border-color: rgba(139, 90, 43, 0.25); }
+
+.combo-breakdown {
+  font-size: 13px;
+  color: var(--ink);
+  padding: 10px 0 4px;
+  border-top: 1px dotted rgba(139, 90, 43, 0.25);
+  margin-top: 8px;
+}
+.bd-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 0;
+}
+.bd-name {
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  color: var(--ink);
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+}
+.bd-calc {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 1px;
+}
+.bd-amt {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.bd-row.bd-total {
+  border-top: 1px dashed rgba(139, 90, 43, 0.35);
+  margin-top: 4px;
+  padding-top: 8px;
+}
+.bd-row.bd-total .bd-name {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--wood-dark);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.bd-row.bd-total .bd-amt {
+  font-size: 15px;
+  color: var(--wood-dark);
+  font-weight: 700;
+}
+
+.combo-actions { display: flex; gap: 6px; margin-top: 10px; }
+.combo-action {
+  flex: 1; padding: 8px 10px;
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+  background: transparent; border: 1px solid rgba(139, 90, 43, 0.4);
+  color: var(--wood-mid); border-radius: 2px; cursor: pointer;
+  text-transform: uppercase; transition: all 0.2s;
+}
+.combo-action:hover { background: var(--cream-2); }
+.combo-action.finalize { background: var(--green); color: white; border-color: var(--green); }
+.combo-action.finalize:hover { background: #3a6622; }
+.combo-action.delete { color: var(--accent); border-color: rgba(139, 26, 26, 0.4); }
+.combo-action.delete:hover { background: rgba(139, 26, 26, 0.05); border-color: var(--accent); }
+
+/* Final card - bill style */
+.final-card { background: var(--paper); padding: 0; border: 2px solid var(--wood-dark); position: relative; overflow: hidden; }
+.final-card::before { display: none; }
+.final-banner { background: var(--wood-dark); color: var(--paper); padding: 18px 24px; text-align: center; }
+.final-banner-stamp {
+  display: inline-block; border: 1.5px solid var(--gold-light);
+  color: var(--gold-light); padding: 3px 12px;
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 4px;
+  border-radius: 2px; margin-bottom: 8px;
+}
+.final-banner-title { font-family: 'Cinzel', serif; font-size: 22px; letter-spacing: 4px; font-weight: 600; }
+.final-banner-sub { font-size: 13px; font-style: italic; color: var(--cream); opacity: 0.85; margin-top: 4px; }
+
+.final-body { padding: 24px; }
+.final-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px dashed rgba(139, 90, 43, 0.3); }
+.final-meta-row .meta-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.final-meta-row .meta-value { font-family: 'Crimson Pro', serif; font-size: 16px; color: var(--wood-dark); font-weight: 700; }
+
+.final-spec-title { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+.final-spec { font-family: 'Crimson Pro', serif; font-size: 22px; color: var(--wood-dark); font-weight: 700; margin-bottom: 18px; }
+
+.final-line { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px dotted rgba(139, 90, 43, 0.2); }
+.final-line .ln-label { color: var(--ink); font-size: 15px; font-weight: 600; }
+.final-line .ln-detail { display: block; font-size: 11px; color: var(--muted); font-style: italic; margin-top: 1px; }
+.final-line .ln-value { font-family: 'Cinzel', serif; font-size: 14px; color: var(--ink); white-space: nowrap; }
+
+.final-total { margin-top: 14px; padding: 14px 0; border-top: 2px solid var(--wood-dark); border-bottom: 2px solid var(--wood-dark); display: flex; justify-content: space-between; align-items: baseline; }
+.final-total .tot-label { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 2px; color: var(--wood-dark); text-transform: uppercase; }
+.final-total .tot-value { font-family: 'Cinzel', serif; font-size: 28px; color: var(--wood-dark); font-weight: 700; }
+
+.final-note { margin-top: 16px; font-size: 13px; color: var(--muted); font-style: italic; text-align: center; }
+
+.final-internal { margin-top: 16px; padding: 12px 14px; background: rgba(184, 134, 11, 0.08); border-left: 3px solid var(--gold); border-radius: 2px; font-size: 12px; color: var(--wood-dark); }
+.final-internal-row { display: flex; justify-content: space-between; padding: 3px 0; }
+.final-internal-row.heavy { font-weight: 700; font-family: 'Cinzel', serif; font-size: 13px; }
+.hidden-badge { display: inline-block; font-size: 10px; background: rgba(139, 26, 26, 0.1); color: var(--accent); padding: 2px 6px; border-radius: 2px; margin-left: 6px; letter-spacing: 1px; font-style: normal; }
+
+/* Share */
+.share-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+.share-btn {
+  padding: 13px; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px;
+  border: 1px solid var(--wood-mid); border-radius: 2px; cursor: pointer;
+  background: var(--paper); color: var(--wood-dark); text-transform: uppercase;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.share-btn:hover { background: var(--cream-2); }
+.share-btn.whatsapp { background: #25d366; color: white; border-color: #25d366; }
+.share-btn.whatsapp:hover { background: #1ebe5d; }
+
+/* Modal */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(42, 26, 10, 0.6); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-backdrop.active { display: flex; }
+.modal { background: var(--paper); border-radius: 4px; padding: 28px 22px; max-width: 360px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid var(--wood-mid); text-align: center; }
+.modal-title { font-family: 'Cinzel', serif; font-size: 18px; color: var(--wood-dark); margin-bottom: 6px; }
+.modal-text { font-size: 13px; color: var(--muted); margin-bottom: 18px; font-style: italic; }
+.pin-error { color: var(--accent); font-size: 12px; margin-top: 8px; min-height: 16px; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--wood-dark); color: var(--paper); padding: 11px 18px;
+  border-radius: 999px; font-size: 13px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  z-index: 200; transition: transform 0.3s; pointer-events: none;
+  max-width: 90vw; text-align: center;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.footer-brand { text-align: center; margin-top: 28px; font-size: 11px; color: var(--muted); letter-spacing: 2px; }
+.footer-brand .gold { color: var(--gold); }
+
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px;
+  padding: 7px 12px; background: transparent; border: 1px solid rgba(139, 90, 43, 0.4);
+  color: var(--wood-mid); font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+  border-radius: 2px; cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+}
+.back-btn:hover { background: var(--cream-2); }
+
+@media print {
+  body { background: white; }
+  body::before { display: none; }
+  .header, .mode-tabs, .share-row, .builder-card, .list-card, .combo-actions, .toggle-pill, .footer-brand, .back-btn { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  .final-card { border: 2px solid #333; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <div class="ornament">✦ ❖ ✦</div>
+    <div class="brand">Amar Furniture · Nashik</div>
+    <h1 class="title">Umbra <span class="title-mark">·</span> उंबरा</h1>
+    <div class="subtitle">Threshold of fortune · Vastu element for the home</div>
+    <div class="tri-label">
+      <span>Quotation</span>
+      <span class="sep">◆</span>
+      <span>कोटेशन</span>
+      <span class="sep">◆</span>
+      <span>कोटेशन</span>
+    </div>
+  </header>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="customer">Customer</button>
+    <button class="mode-tab" data-mode="internal">Internal <span class="lock">🔒</span></button>
+  </div>
+
+  <div id="workspaceView">
+
+    <div class="card">
+      <div class="card-title">◆ Customer & Size ◆</div>
+      <h2 class="card-heading">Order Details</h2>
+
+      <div class="section">
+        <label class="label">Customer Details <span class="label-tri">(optional)</span></label>
+        <div class="input-row" style="margin-bottom: 8px">
+          <div class="input-group">
+            <div class="input-wrap">
+              <input type="text" id="custName" placeholder="Customer name">
+            </div>
+          </div>
+        </div>
+        <div class="input-wrap">
+          <input type="tel" id="custMobile" placeholder="Mobile (e.g. 98765 43210)" inputmode="tel" autocomplete="tel">
+          <span class="unit">📱 WhatsApp</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <label class="label">Size <span class="label-tri">लांबी × रुंदी · लंबाई × चौड़ाई</span></label>
+        <div class="input-row">
+          <div class="input-group">
+            <div class="input-wrap">
+              <input type="number" id="length" placeholder="Length" inputmode="decimal" step="0.5" min="0.5" max="10">
+              <span class="unit unit-strong">ft</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-wrap">
+              <input type="number" id="width" placeholder="Width" inputmode="decimal" step="0.5" min="1" max="24">
+              <span class="unit unit-strong">in</span>
+            </div>
+          </div>
+        </div>
+        <div class="quick-pick">
+          <button data-l="3" data-w="6">3 ft × 6"</button>
+          <button data-l="3.5" data-w="6">3.5 ft × 6"</button>
+          <button data-l="4" data-w="6">4 ft × 6"</button>
+          <button data-l="3" data-w="8">3 ft × 8"</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card builder-card">
+      <div class="card-title">◆ Build a Combination ◆</div>
+      <h2 class="card-heading">Pick Specs · Add to List</h2>
+
+      <div class="builder-grid">
+        <div class="builder-row">
+          <div class="builder-label">Wood<span class="builder-label-tri">लाकूड</span></div>
+          <div class="option-group" data-axis="wood">
+            <div class="option-pill" data-val="Khair">Khair</div>
+            <div class="option-pill" data-val="Teak">Teak</div>
+          </div>
+        </div>
+        <div class="builder-row">
+          <div class="builder-label">Height<span class="builder-label-tri">उंची</span></div>
+          <div class="option-group" data-axis="height">
+            <div class="option-pill" data-val="1">1 inch</div>
+            <div class="option-pill" data-val="1.5">1½ inch</div>
+          </div>
+        </div>
+        <div class="builder-row">
+          <div class="builder-label">Carving<span class="builder-label-tri">कोरीव</span></div>
+          <div class="option-group" data-axis="carve">
+            <div class="option-pill" data-val="false">Plain</div>
+            <div class="option-pill" data-val="true">CNC Carved</div>
+          </div>
+        </div>
+        <div class="builder-row">
+          <div class="builder-label">Polish<span class="builder-label-tri">पॉलिश</span></div>
+          <div class="option-group" data-axis="polish">
+            <div class="option-pill" data-val="false">Without</div>
+            <div class="option-pill" data-val="true">With Polish</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="builder-preview">
+        <span id="previewText">Pick all four options to preview…</span>
+        <span class="preview-price" id="previewPrice"></span>
+      </div>
+
+      <button class="btn" id="addBtn" disabled>+ Add to List</button>
+    </div>
+
+    <div class="card list-card">
+      <div class="card-title">◆ Comparison ◆</div>
+      <div class="list-header">
+        <h2 class="card-heading" style="margin-bottom:0">Combinations</h2>
+        <span class="list-count" id="listCount">0 items</span>
+      </div>
+
+      <div id="listBody"></div>
+    </div>
+
+  </div>
+
+  <div id="finalView" style="display:none"></div>
+
+  <div class="footer-brand">
+    <span class="gold">✦</span> AMAR FURNITURE <span class="gold">✦</span>
+    <div style="margin-top:6px; font-style:italic; letter-spacing:1px">Crafted in Nashik · since 1985</div>
+  </div>
+
+</div>
+
+<div class="modal-backdrop" id="pinModal">
+  <div class="modal">
+    <div class="modal-title">Internal Access</div>
+    <div class="modal-text">Enter PIN to view internal calculator</div>
+    <input type="password" id="pinInput" placeholder="• • • •" inputmode="numeric" maxlength="6" autocomplete="off">
+    <div class="pin-error" id="pinError"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="pinCancel">Cancel</button>
+      <button class="btn" id="pinSubmit">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG = {
+  PIN: '2580',
+  brandShort: 'AMR-UMB',
+  RATES: {
+    teakPerCuft: 5500,
+    khairPerCuft: 17500,
+    cncPerSqIn: 3,
+    polishPerSqIn: 2,
+    polishMin: 500,
+  },
+  GST_PERCENT: 18,
+};
+
+const state = {
+  mode: 'customer',
+  internalUnlocked: false,
+  builder: { wood: null, height: null, carve: null, polish: null },
+  combos: [],
+  finalizedId: null,
+  nextId: 1,
+  quoteId: null,
+};
+
+function calcCombo(c, L, W) {
+  const H = c.height;
+  const volCuft = (L * W * H) / 1728;
+  const woodRate = c.wood === 'Khair' ? CONFIG.RATES.khairPerCuft : CONFIG.RATES.teakPerCuft;
+  const wood = volCuft * woodRate;
+  let cnc = 0;
+  if (c.carve) cnc = L * W * CONFIG.RATES.cncPerSqIn;
+  let polish = 0, surface = 0;
+  if (c.polish) {
+    surface = (L * W) + 2 * (L * H) + 2 * (W * H);
+    polish = Math.max(surface * CONFIG.RATES.polishPerSqIn, CONFIG.RATES.polishMin);
+  }
+  const subtotal = wood + cnc + polish;
+  return {
+    L, W, H, volCuft,
+    wood: Math.round(wood),
+    cnc: Math.round(cnc),
+    polish: Math.round(polish),
+    surface: Math.round(surface),
+    subtotal: Math.round(subtotal),
+    sqIn: L * W,
+  };
+}
+
+function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+function comboTitle(c) {
+  const h = c.height === 1.5 ? '1½"' : '1"';
+  const parts = [c.wood, h];
+  parts.push(c.carve ? 'Carved' : 'Plain');
+  parts.push(c.polish ? 'Polished' : 'No Polish');
+  return parts.join(' · ');
+}
+
+function getDims() {
+  const Lft = parseFloat(document.getElementById('length').value);
+  const W = parseFloat(document.getElementById('width').value);
+  if (!Lft || !W || Lft <= 0 || W <= 0) return null;
+  // L is stored as inches for all internal math (1 ft = 12 in). Lft kept for display.
+  return { L: Lft * 12, W, Lft };
+}
+
+/* Detect likely unit-confusion: length > 10 ft is almost certainly inches typed by mistake */
+let lengthWarnedAt = 0;
+function maybeWarnLength() {
+  const Lft = parseFloat(document.getElementById('length').value);
+  if (!Lft) return;
+  if (Lft > 10 && Date.now() - lengthWarnedAt > 5000) {
+    lengthWarnedAt = Date.now();
+    toast('Length is in FEET, not inches — ' + Lft + ' ft seems too large');
+  }
+}
+
+function buildBuilder() {
+  document.querySelectorAll('.option-group').forEach(group => {
+    const axis = group.dataset.axis;
+    group.querySelectorAll('.option-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        if (pill.classList.contains('disabled')) return;
+        const raw = pill.dataset.val;
+        const val = (axis === 'height') ? parseFloat(raw)
+                  : (axis === 'carve' || axis === 'polish') ? (raw === 'true')
+                  : raw;
+        state.builder[axis] = val;
+        if (axis === 'height' && val === 1 && state.builder.carve === true) {
+          state.builder.carve = false;
+        }
+        syncBuilderUI();
+      });
+    });
+  });
+}
+
+function syncBuilderUI() {
+  document.querySelectorAll('.option-group').forEach(group => {
+    const axis = group.dataset.axis;
+    group.querySelectorAll('.option-pill').forEach(pill => {
+      const raw = pill.dataset.val;
+      const val = (axis === 'height') ? parseFloat(raw)
+                : (axis === 'carve' || axis === 'polish') ? (raw === 'true')
+                : raw;
+      pill.classList.toggle('active', state.builder[axis] === val);
+    });
+  });
+
+  const carvedPill = document.querySelector('.option-group[data-axis="carve"] .option-pill[data-val="true"]');
+  if (carvedPill) {
+    const disabled = state.builder.height === 1;
+    carvedPill.classList.toggle('disabled', disabled);
+    carvedPill.title = disabled ? 'CNC carving needs 1½" height' : '';
+  }
+
+  updateBuilderPreview();
+}
+
+function updateBuilderPreview() {
+  const b = state.builder;
+  const previewText = document.getElementById('previewText');
+  const previewPrice = document.getElementById('previewPrice');
+  const addBtn = document.getElementById('addBtn');
+
+  const complete = b.wood !== null && b.height !== null && b.carve !== null && b.polish !== null;
+
+  if (!complete) {
+    previewText.textContent = 'Pick all four options to preview…';
+    previewPrice.textContent = '';
+    addBtn.disabled = true;
+    return;
+  }
+
+  const dims = getDims();
+  const title = comboTitle(b);
+  if (!dims) {
+    previewText.innerHTML = '<strong>' + title + '</strong> <span style="opacity:0.7">— enter size to see price</span>';
+    previewPrice.textContent = '';
+    addBtn.disabled = false;
+    return;
+  }
+
+  const calc = calcCombo(b, dims.L, dims.W);
+  previewText.innerHTML = '<strong>' + title + '</strong>';
+  previewPrice.textContent = fmt(calc.subtotal);
+  addBtn.disabled = false;
+}
+
+function resetBuilder() {
+  state.builder = { wood: null, height: null, carve: null, polish: null };
+  syncBuilderUI();
+}
+
+function addCombo() {
+  const b = state.builder;
+  if (b.wood === null || b.height === null || b.carve === null || b.polish === null) {
+    toast('Pick all four options first');
+    return;
+  }
+  if (!state.quoteId) {
+    state.quoteId = CONFIG.brandShort + '-' + Date.now().toString(36).toUpperCase().slice(-6);
+  }
+  state.combos.push({
+    id: state.nextId++,
+    wood: b.wood, height: b.height, carve: b.carve, polish: b.polish,
+  });
+  resetBuilder();
+  renderList();
+  toast('Added combination #' + state.combos.length);
+}
+
+function renderList() {
+  const body = document.getElementById('listBody');
+  document.getElementById('listCount').textContent =
+    state.combos.length + ' item' + (state.combos.length === 1 ? '' : 's');
+
+  if (state.combos.length === 0) {
+    body.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-icon">◇</div>' +
+      'No combinations yet.<br>Build one above and tap "Add to List".' +
+      '</div>';
+    return;
+  }
+
+  const dims = getDims();
+  const isInternal = state.mode === 'internal';
+
+  let html = '<div class="combo-list">' +
+    state.combos.map((c, i) => renderComboCard(c, i, dims, isInternal)).join('') +
+    '</div>';
+
+  if (dims) {
+    html +=
+      '<div class="share-row">' +
+      '<button class="share-btn whatsapp" id="shareCmpWA">📱 Text Quote</button>' +
+      '<button class="share-btn" id="shareCmpPDF">📄 Share PDF</button>' +
+      '</div>';
+  } else {
+    html += '<div class="empty-state" style="margin-top:14px">Enter length & width above to see prices.</div>';
+  }
+
+  body.innerHTML = html;
+
+  if (dims) {
+    document.getElementById('shareCmpWA').addEventListener('click', shareComparison);
+    document.getElementById('shareCmpPDF').addEventListener('click', () => {
+      const custName = document.getElementById('custName').value.trim();
+      const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+      const doc = buildComparisonPDF(custName, today, dims);
+      const filename = (state.quoteId || 'umbra-quote') + '-comparison.pdf';
+      const ctx = 'Umbra quotation comparison from Amar Furniture' + (custName ? ' for ' + custName : '');
+      sharePDF(doc, filename, ctx);
+    });
+  }
+
+  body.querySelectorAll('.combo-card').forEach(card => {
+    const id = parseInt(card.dataset.id);
+    card.querySelectorAll('.toggle-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        if (pill.classList.contains('disabled')) return;
+        const axis = pill.dataset.axis;
+        const raw = pill.dataset.val;
+        const val = (axis === 'height') ? parseFloat(raw)
+                  : (axis === 'carve' || axis === 'polish') ? (raw === 'true')
+                  : raw;
+        toggleComboField(id, axis, val);
+      });
+    });
+    const del = card.querySelector('.combo-action.delete');
+    if (del) del.addEventListener('click', () => deleteCombo(id));
+    const fin = card.querySelector('.combo-action.finalize');
+    if (fin) fin.addEventListener('click', () => finalizeCombo(id));
+  });
+}
+
+function renderComboCard(c, idx, dims, isInternal) {
+  const calc = dims ? calcCombo(c, dims.L, dims.W) : null;
+  const title = comboTitle(c);
+
+  const toggleRow = (axis, opts) =>
+    opts.map(o => {
+      const val = o.val;
+      const isOn = c[axis] === val;
+      const disabled = (axis === 'carve' && val === true && c.height === 1);
+      return '<span class="toggle-pill ' + (isOn ? 'on' : '') + ' ' + (disabled ? 'disabled' : '') + '"' +
+             ' data-axis="' + axis + '" data-val="' + val + '">' + o.label + '</span>';
+    }).join('');
+
+  let breakdown = '';
+  if (calc) {
+    const woodRate = c.wood === 'Khair' ? CONFIG.RATES.khairPerCuft : CONFIG.RATES.teakPerCuft;
+    const items = [];
+    items.push(
+      '<div class="bd-row">' +
+        '<div class="bd-name">' + c.wood + ' wood' +
+          '<span class="bd-calc">' + calc.volCuft.toFixed(3) + ' cuft × ' + fmt(woodRate) + '/cuft</span>' +
+        '</div>' +
+        '<div class="bd-amt">' + fmt(calc.wood) + '</div>' +
+      '</div>'
+    );
+    if (c.carve) {
+      items.push(
+        '<div class="bd-row">' +
+          '<div class="bd-name">CNC carving' +
+            '<span class="bd-calc">' + calc.sqIn + ' sq in × ' + fmt(CONFIG.RATES.cncPerSqIn) + '/sq in</span>' +
+          '</div>' +
+          '<div class="bd-amt">' + fmt(calc.cnc) + '</div>' +
+        '</div>'
+      );
+    }
+    if (c.polish) {
+      const polishRaw = calc.surface * CONFIG.RATES.polishPerSqIn;
+      const minApplied = polishRaw < CONFIG.RATES.polishMin;
+      items.push(
+        '<div class="bd-row">' +
+          '<div class="bd-name">Polish' +
+            '<span class="bd-calc">' + calc.surface + ' sq in surface × ' + fmt(CONFIG.RATES.polishPerSqIn) + '/sq in' +
+            (minApplied ? ' (min ' + fmt(CONFIG.RATES.polishMin) + ')' : '') + '</span>' +
+          '</div>' +
+          '<div class="bd-amt">' + fmt(calc.polish) + '</div>' +
+        '</div>'
+      );
+    }
+    items.push(
+      '<div class="bd-row bd-total">' +
+        '<div class="bd-name">Total</div>' +
+        '<div class="bd-amt">' + fmt(calc.subtotal) + '</div>' +
+      '</div>'
+    );
+    breakdown = '<div class="combo-breakdown">' + items.join('') + '</div>';
+  }
+
+  return '<div class="combo-card" data-id="' + c.id + '">' +
+    '<div class="combo-head">' +
+      '<div>' +
+        '<div class="combo-num">Combination #' + (idx + 1) + '</div>' +
+        '<div class="combo-title">' + title + '</div>' +
+      '</div>' +
+      '<div class="combo-price">' + (calc ? fmt(calc.subtotal) : '—') + '</div>' +
+    '</div>' +
+    '<div class="combo-toggles">' +
+      toggleRow('wood', [{val:'Khair',label:'Khair'},{val:'Teak',label:'Teak'}]) +
+      toggleRow('height', [{val:1,label:'1"'},{val:1.5,label:'1½"'}]) +
+      toggleRow('carve', [{val:false,label:'Plain'},{val:true,label:'Carved'}]) +
+      toggleRow('polish', [{val:false,label:'No Polish'},{val:true,label:'Polished'}]) +
+    '</div>' +
+    breakdown +
+    '<div class="combo-actions">' +
+      '<button class="combo-action finalize">★ Finalize this</button>' +
+      '<button class="combo-action delete">✕ Remove</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function toggleComboField(id, axis, val) {
+  const combo = state.combos.find(c => c.id === id);
+  if (!combo) return;
+  if (axis === 'height' && val === 1 && combo.carve === true) {
+    combo.carve = false;
+    toast('1" can\'t be CNC carved — switched to Plain');
+  }
+  combo[axis] = val;
+  renderList();
+}
+
+function deleteCombo(id) {
+  const idx = state.combos.findIndex(c => c.id === id);
+  if (idx === -1) return;
+  state.combos.splice(idx, 1);
+  renderList();
+}
+
+function finalizeCombo(id) {
+  const dims = getDims();
+  if (!dims) {
+    toast('Enter length & width first');
+    return;
+  }
+  state.finalizedId = id;
+  document.getElementById('workspaceView').style.display = 'none';
+  document.getElementById('finalView').style.display = 'block';
+  renderFinal();
+  setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+}
+
+function unfinalize() {
+  state.finalizedId = null;
+  document.getElementById('finalView').style.display = 'none';
+  document.getElementById('workspaceView').style.display = 'block';
+  document.getElementById('finalView').innerHTML = '';
+}
+
+function renderFinal() {
+  const combo = state.combos.find(c => c.id === state.finalizedId);
+  if (!combo) { unfinalize(); return; }
+  const dims = getDims();
+  if (!dims) { unfinalize(); return; }
+
+  const calc = calcCombo(combo, dims.L, dims.W);
+  const isInternal = state.mode === 'internal';
+  const custName = document.getElementById('custName').value.trim();
+  const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const gst = calc.subtotal * (CONFIG.GST_PERCENT / 100);
+  const customerPays = calc.subtotal + gst;
+  const woodRate = combo.wood === 'Khair' ? CONFIG.RATES.khairPerCuft : CONFIG.RATES.teakPerCuft;
+
+  let internalHtml = '';
+  if (isInternal) {
+    internalHtml =
+      '<div class="final-internal">' +
+        '<div class="final-internal-row"><span>Subtotal</span><span>' + fmt(calc.subtotal) + '</span></div>' +
+        '<div class="final-internal-row"><span>+ GST 18%</span><span>' + fmt(gst) + '</span></div>' +
+        '<div class="final-internal-row heavy"><span>Customer pays</span><span>' + fmt(customerPays) + '</span></div>' +
+      '</div>';
+  }
+
+  document.getElementById('finalView').innerHTML =
+    '<button class="back-btn" id="backBtn">← Back to comparison</button>' +
+    '<div class="card final-card">' +
+      '<div class="final-banner">' +
+        '<div class="final-banner-stamp">★ Finalized Quote ★</div>' +
+        '<div class="final-banner-title">UMBRA</div>' +
+        '<div class="final-banner-sub">Threshold of fortune · उंबरा</div>' +
+      '</div>' +
+      '<div class="final-body">' +
+        '<div class="final-meta">' +
+          '<div class="final-meta-row"><div class="meta-label">Customer</div><div class="meta-value">' + (custName ? escapeHtml(custName) : '—') + '</div></div>' +
+          '<div class="final-meta-row"><div class="meta-label">Date</div><div class="meta-value">' + today + '</div></div>' +
+          '<div class="final-meta-row"><div class="meta-label">Quote No.</div><div class="meta-value">' + state.quoteId + '</div></div>' +
+          '<div class="final-meta-row"><div class="meta-label">Size</div><div class="meta-value">' + dims.Lft + ' ft × ' + dims.W + '" × ' + combo.height + '"</div></div>' +
+        '</div>' +
+        '<div class="final-spec-title">◆ Specification ◆</div>' +
+        '<div class="final-spec">' + comboTitle(combo) + '</div>' +
+        '<div class="final-line">' +
+          '<div><span class="ln-label">' + combo.wood + ' wood</span>' +
+          '<span class="ln-detail">' + calc.volCuft.toFixed(3) + ' cuft @ ' + fmt(woodRate) + '/cuft</span></div>' +
+          '<div class="ln-value">' + fmt(calc.wood) + '</div>' +
+        '</div>' +
+        (combo.carve ?
+          '<div class="final-line">' +
+            '<div><span class="ln-label">CNC carving</span>' +
+            '<span class="ln-detail">' + calc.sqIn + ' sq in @ ' + fmt(CONFIG.RATES.cncPerSqIn) + '/sq in</span></div>' +
+            '<div class="ln-value">' + fmt(calc.cnc) + '</div>' +
+          '</div>' : '') +
+        (combo.polish ?
+          '<div class="final-line">' +
+            '<div><span class="ln-label">Polish</span>' +
+            '<span class="ln-detail">' + calc.surface + ' sq in surface @ ' + fmt(CONFIG.RATES.polishPerSqIn) + '/sq in (min ' + fmt(CONFIG.RATES.polishMin) + ')</span></div>' +
+            '<div class="ln-value">' + fmt(calc.polish) + '</div>' +
+          '</div>' : '') +
+        '<div class="final-total">' +
+          '<div class="tot-label">' + (isInternal ? 'Net (ex-GST)' : 'Total') + '</div>' +
+          '<div class="tot-value">' + fmt(calc.subtotal) + '</div>' +
+        '</div>' +
+        '<div class="final-note">' +
+          (isInternal ? '* Net price excludes GST. Customer total shown below.'
+                      : '* GST 18% extra. Transport extra. <br><em>GST व ट्रान्सपोर्ट वेगळे · GST और ट्रांसपोर्ट अलग</em>') +
+        '</div>' +
+        internalHtml +
+        '<div class="share-row">' +
+          '<button class="share-btn whatsapp" id="shareFinalWA">📱 Text Quote</button>' +
+          '<button class="share-btn" id="shareFinalPDF">📄 Share PDF</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  document.getElementById('backBtn').addEventListener('click', unfinalize);
+  document.getElementById('shareFinalWA').addEventListener('click', () => shareFinal(combo, calc, dims, custName, today));
+  document.getElementById('shareFinalPDF').addEventListener('click', () => {
+    const doc = buildFinalPDF(combo, calc, dims, custName, today);
+    const filename = (state.quoteId || 'umbra-quote') + '-final.pdf';
+    const ctx = 'Final umbra quotation from Amar Furniture' + (custName ? ' for ' + custName : '');
+    sharePDF(doc, filename, ctx);
+  });
+}
+
+function shareComparison() {
+  const dims = getDims();
+  if (!dims) { toast('Enter size first'); return; }
+
+  const custName = document.getElementById('custName').value.trim();
+  const isInternal = state.mode === 'internal';
+  const lines = [];
+
+  lines.push('*✦ AMAR FURNITURE — UMBRA QUOTATION ✦*');
+  lines.push('');
+  if (custName) lines.push('*Customer:* ' + custName);
+  lines.push('*Size:* ' + dims.Lft + ' ft × ' + dims.W + '"');
+  lines.push('*Quote:* ' + (state.quoteId || '—'));
+  lines.push('');
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+
+  state.combos.forEach((c, i) => {
+    const calc = calcCombo(c, dims.L, dims.W);
+    const woodRate = c.wood === 'Khair' ? CONFIG.RATES.khairPerCuft : CONFIG.RATES.teakPerCuft;
+    lines.push('');
+    lines.push('*Option ' + (i + 1) + ': ' + comboTitle(c) + '*');
+    lines.push('  Wood: ' + calc.volCuft.toFixed(3) + ' cuft × ' + fmt(woodRate) + ' = ' + fmt(calc.wood));
+    if (c.carve) lines.push('  CNC: ' + calc.sqIn + ' sq in × ' + fmt(CONFIG.RATES.cncPerSqIn) + ' = ' + fmt(calc.cnc));
+    if (c.polish) lines.push('  Polish: ' + calc.surface + ' sq in × ' + fmt(CONFIG.RATES.polishPerSqIn) + ' = ' + fmt(calc.polish));
+    lines.push('  *Total: ' + fmt(calc.subtotal) + '*');
+    if (isInternal) {
+      const gst = calc.subtotal * 0.18;
+      lines.push('  +GST 18%: ' + fmt(gst) + ' → ' + fmt(calc.subtotal + gst));
+    }
+  });
+
+  lines.push('');
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+  lines.push('_Prices exclusive of GST (18%) & transport._');
+  lines.push('_उंबरा - उत्तम वास्तू शकुन_');
+  lines.push('');
+  lines.push('Amar Furniture, Nashik');
+
+  window.open(whatsappUrl(lines.join('\n')), '_blank');
+}
+
+function shareFinal(combo, calc, dims, custName, today) {
+  const isInternal = state.mode === 'internal';
+  const gst = calc.subtotal * 0.18;
+  const lines = [];
+
+  lines.push('*✦ AMAR FURNITURE — UMBRA ✦*');
+  lines.push('*★ FINAL QUOTATION ★*');
+  lines.push('');
+  if (custName) lines.push('*Customer:* ' + custName);
+  lines.push('*Date:* ' + today);
+  lines.push('*Quote No:* ' + state.quoteId);
+  lines.push('*Size:* ' + dims.Lft + ' ft × ' + dims.W + '" × ' + combo.height + '"');
+  lines.push('');
+  lines.push('*Specification:*');
+  lines.push(comboTitle(combo));
+  lines.push('');
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+  lines.push('Wood (' + calc.volCuft.toFixed(3) + ' cuft): ' + fmt(calc.wood));
+  if (combo.carve) lines.push('CNC carving: ' + fmt(calc.cnc));
+  if (combo.polish) lines.push('Polish: ' + fmt(calc.polish));
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+  lines.push('*TOTAL: ' + fmt(calc.subtotal) + '*');
+  if (isInternal) {
+    lines.push('+ GST 18%: ' + fmt(gst));
+    lines.push('*Customer pays: ' + fmt(calc.subtotal + gst) + '*');
+  }
+  lines.push('');
+  lines.push('_GST व ट्रान्सपोर्ट वेगळे · GST and transport extra_');
+  lines.push('');
+  lines.push('Amar Furniture, Nashik');
+
+  window.open(whatsappUrl(lines.join('\n')), '_blank');
+}
+
+function setMode(mode) {
+  if (mode === 'internal' && !state.internalUnlocked) {
+    showPinModal();
+    return;
+  }
+  state.mode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.mode === mode);
+  });
+  if (state.finalizedId) renderFinal();
+  else renderList();
+}
+
+function showPinModal() {
+  document.getElementById('pinModal').classList.add('active');
+  document.getElementById('pinInput').value = '';
+  document.getElementById('pinError').textContent = '';
+  setTimeout(() => document.getElementById('pinInput').focus(), 100);
+}
+
+function hidePinModal() {
+  document.getElementById('pinModal').classList.remove('active');
+}
+
+function checkPin() {
+  const v = document.getElementById('pinInput').value;
+  if (v === CONFIG.PIN) {
+    state.internalUnlocked = true;
+    hidePinModal();
+    setMode('internal');
+    toast('Internal mode unlocked');
+  } else {
+    document.getElementById('pinError').textContent = 'Incorrect PIN';
+    document.getElementById('pinInput').value = '';
+  }
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ============================================================
+   MOBILE NUMBER + WHATSAPP HELPERS
+   ============================================================ */
+function parseMobile(raw) {
+  if (!raw) return null;
+  // Strip all non-digits
+  const digits = raw.replace(/\D/g, '');
+  if (!digits) return null;
+  // If 10 digits, prepend India country code
+  if (digits.length === 10) return '91' + digits;
+  // If 11 digits starting with 0, treat as 0XXXXXXXXXX → drop the 0, add 91
+  if (digits.length === 11 && digits.startsWith('0')) return '91' + digits.slice(1);
+  // If 12 digits starting with 91, use as-is
+  if (digits.length === 12 && digits.startsWith('91')) return digits;
+  // Otherwise return whatever digits we have (international)
+  if (digits.length >= 10) return digits;
+  return null;
+}
+
+function whatsappUrl(text) {
+  const raw = document.getElementById('custMobile').value.trim();
+  const num = parseMobile(raw);
+  const encoded = encodeURIComponent(text);
+  if (num) {
+    return 'https://wa.me/' + num + '?text=' + encoded;
+  }
+  return 'https://wa.me/?text=' + encoded;
+}
+
+/* ============================================================
+   PDF GENERATION
+   ============================================================ */
+function buildFinalPDF(combo, calc, dims, custName, today) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pageW = 210, pageH = 297;
+  const margin = 18;
+
+  // Theme colours (RGB approximations of CSS vars)
+  const wood = [139, 90, 43];
+  const woodDark = [93, 60, 32];
+  const gold = [200, 155, 58];
+  const muted = [138, 122, 100];
+  const ink = [61, 40, 23];
+
+  // ---------- Header banner ----------
+  doc.setFillColor(...woodDark);
+  doc.rect(0, 0, pageW, 38, 'F');
+
+  // Stamp box
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(pageW/2 - 28, 8, 56, 7, 1, 1);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...gold);
+  doc.text('FINALIZED QUOTE', pageW/2, 13, { align: 'center' });
+
+  doc.setFontSize(20);
+  doc.setTextColor(255, 253, 247);
+  doc.text('UMBRA', pageW/2, 24, { align: 'center' });
+
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(220, 200, 170);
+  doc.text('Threshold of fortune  ·  Amar Furniture, Nashik', pageW/2, 31, { align: 'center' });
+
+  // ---------- Meta grid ----------
+  let y = 50;
+  const colW = (pageW - margin*2) / 2;
+
+  const meta = [
+    ['CUSTOMER', custName || '—'],
+    ['DATE', today],
+    ['QUOTE NO.', state.quoteId],
+    ['SIZE', dims.Lft + ' ft × ' + dims.W + '" × ' + combo.height + '"'],
+  ];
+
+  for (let i = 0; i < meta.length; i++) {
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const x = margin + col * colW;
+    const yy = y + row * 11;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...muted);
+    doc.text(meta[i][0], x, yy);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...woodDark);
+    doc.text(String(meta[i][1]), x, yy + 5);
+  }
+
+  y += 28;
+
+  // Divider
+  doc.setDrawColor(180, 150, 110);
+  doc.setLineDashPattern([1, 1], 0);
+  doc.line(margin, y, pageW - margin, y);
+  doc.setLineDashPattern([], 0);
+
+  y += 8;
+
+  // ---------- Spec ----------
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...gold);
+  doc.text('SPECIFICATION', margin, y);
+  y += 6;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.setTextColor(...woodDark);
+  doc.text(comboTitle(combo), margin, y);
+  y += 12;
+
+  // ---------- Line items ----------
+  const woodRate = combo.wood === 'Khair' ? CONFIG.RATES.khairPerCuft : CONFIG.RATES.teakPerCuft;
+
+  const rupee = (n) => 'Rs. ' + Math.round(n).toLocaleString('en-IN');
+
+  const drawLine = (label, detail, amount) => {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...ink);
+    doc.text(label, margin, y);
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(...muted);
+    doc.text(detail, margin, y + 4.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...ink);
+    doc.text(rupee(amount), pageW - margin, y, { align: 'right' });
+    y += 10;
+    // dotted separator
+    doc.setDrawColor(200, 175, 145);
+    doc.setLineDashPattern([0.5, 0.5], 0);
+    doc.line(margin, y - 3, pageW - margin, y - 3);
+    doc.setLineDashPattern([], 0);
+  };
+
+  drawLine(
+    combo.wood + ' wood',
+    calc.volCuft.toFixed(3) + ' cuft x ' + rupee(woodRate) + '/cuft',
+    calc.wood
+  );
+
+  if (combo.carve) {
+    drawLine(
+      'CNC carving',
+      calc.sqIn + ' sq in x ' + rupee(CONFIG.RATES.cncPerSqIn) + '/sq in',
+      calc.cnc
+    );
+  }
+
+  if (combo.polish) {
+    const polishRaw = calc.surface * CONFIG.RATES.polishPerSqIn;
+    const minNote = polishRaw < CONFIG.RATES.polishMin ? ' (min ' + rupee(CONFIG.RATES.polishMin) + ')' : '';
+    drawLine(
+      'Polish',
+      calc.surface + ' sq in surface x ' + rupee(CONFIG.RATES.polishPerSqIn) + '/sq in' + minNote,
+      calc.polish
+    );
+  }
+
+  // ---------- Total ----------
+  y += 4;
+  doc.setDrawColor(...woodDark);
+  doc.setLineWidth(0.6);
+  doc.line(margin, y, pageW - margin, y);
+  y += 8;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...woodDark);
+  doc.text('TOTAL', margin, y);
+  doc.setFontSize(20);
+  doc.text(rupee(calc.subtotal), pageW - margin, y, { align: 'right' });
+  y += 4;
+  doc.line(margin, y, pageW - margin, y);
+  y += 12;
+
+  // ---------- Note ----------
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(...muted);
+  doc.text('* GST 18% extra. Transport extra.', pageW/2, y, { align: 'center' });
+  y += 5;
+  doc.text('GST and transport are additional.', pageW/2, y, { align: 'center' });
+
+  // ---------- Footer ----------
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(0.3);
+  doc.line(margin, pageH - 22, pageW - margin, pageH - 22);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(...woodDark);
+  doc.text('AMAR FURNITURE', pageW/2, pageH - 16, { align: 'center' });
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(8);
+  doc.setTextColor(...muted);
+  doc.text('Crafted in Nashik  ·  since 1985', pageW/2, pageH - 11, { align: 'center' });
+
+  return doc;
+}
+
+/* Build PDF for the comparison list */
+function buildComparisonPDF(custName, today, dims) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pageW = 210, pageH = 297;
+  const margin = 18;
+
+  const wood = [139, 90, 43];
+  const woodDark = [93, 60, 32];
+  const gold = [200, 155, 58];
+  const muted = [138, 122, 100];
+  const ink = [61, 40, 23];
+
+  // Header
+  doc.setFillColor(...woodDark);
+  doc.rect(0, 0, pageW, 32, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(255, 253, 247);
+  doc.text('UMBRA', pageW/2, 15, { align: 'center' });
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(220, 200, 170);
+  doc.text('Quotation Comparison  ·  Amar Furniture, Nashik', pageW/2, 22, { align: 'center' });
+
+  // Meta
+  let y = 42;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...muted);
+  doc.text('CUSTOMER', margin, y);
+  doc.text('DATE', margin + 60, y);
+  doc.text('SIZE', margin + 110, y);
+  doc.text('QUOTE NO.', pageW - margin - 35, y);
+  y += 5;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(...woodDark);
+  doc.text(custName || '—', margin, y);
+  doc.text(today, margin + 60, y);
+  doc.text(dims.Lft + ' ft x ' + dims.W + '"', margin + 110, y);
+  doc.text(state.quoteId || '—', pageW - margin, y, { align: 'right' });
+
+  y += 10;
+  doc.setDrawColor(180, 150, 110);
+  doc.line(margin, y, pageW - margin, y);
+  y += 8;
+
+  const rupee = (n) => 'Rs. ' + Math.round(n).toLocaleString('en-IN');
+
+  state.combos.forEach((c, i) => {
+    if (y > pageH - 60) {
+      doc.addPage();
+      y = margin;
+    }
+
+    const calc = calcCombo(c, dims.L, dims.W);
+    const woodRate = c.wood === 'Khair' ? CONFIG.RATES.khairPerCuft : CONFIG.RATES.teakPerCuft;
+
+    // Combo header
+    doc.setFillColor(250, 245, 230);
+    doc.rect(margin, y - 5, pageW - margin*2, 9, 'F');
+    doc.setDrawColor(...gold);
+    doc.setLineWidth(0.8);
+    doc.line(margin, y - 5, margin, y + 4);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...gold);
+    doc.text('OPTION ' + (i + 1), margin + 3, y);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...woodDark);
+    doc.text(comboTitle(c), margin + 22, y);
+
+    doc.setFontSize(13);
+    doc.text(rupee(calc.subtotal), pageW - margin, y, { align: 'right' });
+
+    y += 8;
+
+    // Line items
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...ink);
+
+    const drawSubLine = (label, detail, amt) => {
+      doc.setFont('helvetica', 'normal');
+      doc.text(label, margin + 4, y);
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(8);
+      doc.setTextColor(...muted);
+      doc.text(detail, margin + 30, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(...ink);
+      doc.text(rupee(amt), pageW - margin, y, { align: 'right' });
+      y += 5;
+    };
+
+    drawSubLine(
+      c.wood + ' wood',
+      calc.volCuft.toFixed(3) + ' cuft x ' + rupee(woodRate) + '/cuft',
+      calc.wood
+    );
+    if (c.carve) {
+      drawSubLine('CNC carving', calc.sqIn + ' sq in x ' + rupee(CONFIG.RATES.cncPerSqIn) + '/sq in', calc.cnc);
+    }
+    if (c.polish) {
+      drawSubLine('Polish', calc.surface + ' sq in x ' + rupee(CONFIG.RATES.polishPerSqIn) + '/sq in', calc.polish);
+    }
+    y += 4;
+  });
+
+  // Note
+  if (y > pageH - 30) { doc.addPage(); y = margin; }
+  doc.setDrawColor(180, 150, 110);
+  doc.setLineDashPattern([1, 1], 0);
+  doc.line(margin, y, pageW - margin, y);
+  doc.setLineDashPattern([], 0);
+  y += 6;
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(...muted);
+  doc.text('* All prices exclusive of GST (18%) and transport.', pageW/2, y, { align: 'center' });
+
+  // Footer
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(0.3);
+  doc.line(margin, pageH - 22, pageW - margin, pageH - 22);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(...woodDark);
+  doc.text('AMAR FURNITURE', pageW/2, pageH - 16, { align: 'center' });
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(8);
+  doc.setTextColor(...muted);
+  doc.text('Crafted in Nashik  ·  since 1985', pageW/2, pageH - 11, { align: 'center' });
+
+  return doc;
+}
+
+/* Dispatcher: Web Share API on mobile, download on desktop */
+async function sharePDF(doc, filename, contextText) {
+  const blob = doc.output('blob');
+  const file = new File([blob], filename, { type: 'application/pdf' });
+
+  // Try Web Share API with files
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'Umbra Quotation',
+        text: contextText || '',
+      });
+      return;
+    } catch (err) {
+      // User cancelled or share failed — fall through to download
+      if (err.name !== 'AbortError') {
+        console.warn('Share failed, falling back to download', err);
+      } else {
+        return; // user cancelled, don't download
+      }
+    }
+  }
+
+  // Desktop / unsupported: download + tell user
+  doc.save(filename);
+  toast('PDF downloaded — drag into WhatsApp Web');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildBuilder();
+  syncBuilderUI();
+
+  document.querySelectorAll('.mode-tab').forEach(t => {
+    t.addEventListener('click', () => setMode(t.dataset.mode));
+  });
+
+  document.querySelectorAll('.quick-pick button[data-l]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.getElementById('length').value = b.dataset.l;
+      document.getElementById('width').value = b.dataset.w;
+      updateBuilderPreview();
+      renderList();
+      if (state.finalizedId) renderFinal();
+    });
+  });
+
+  ['length', 'width'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      if (id === 'length') maybeWarnLength();
+      updateBuilderPreview();
+      renderList();
+      if (state.finalizedId) renderFinal();
+    });
+  });
+
+  document.getElementById('custName').addEventListener('input', () => {
+    if (state.finalizedId) renderFinal();
+  });
+
+  document.getElementById('addBtn').addEventListener('click', addCombo);
+
+  document.getElementById('pinSubmit').addEventListener('click', checkPin);
+  document.getElementById('pinCancel').addEventListener('click', hidePinModal);
+  document.getElementById('pinInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPin();
+    if (e.key === 'Escape') hidePinModal();
+  });
+  document.getElementById('pinModal').addEventListener('click', e => {
+    if (e.target.id === 'pinModal') hidePinModal();
+  });
+
+  renderList();
+});
+
+if ('serviceWorker' in navigator) {
+  const sw =
+    "const CACHE='umbra-v2';" +
+    "self.addEventListener('install',e=>self.skipWaiting());" +
+    "self.addEventListener('activate',e=>self.clients.claim());" +
+    "self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(resp=>{const c=resp.clone();caches.open(CACHE).then(x=>x.put(e.request,c));return resp;}).catch(()=>caches.match('./'))));});";
+  const url = URL.createObjectURL(new Blob([sw], { type: 'application/javascript' }));
+  navigator.serviceWorker.register(url).catch(() => {});
+}
+</script>
+
+</body>
+</html>
