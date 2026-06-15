@@ -225,7 +225,3 @@ After deploy, verify each:
 - Phone-call/walk-in fake orders. (Human problem, not software.)
 
 ---
-
-## When to escalate to SMS OTP
-
-If you ever see more than ~10 fake-looking orders in a single day, add Phone Auth as a v1.1 upgrade. Cost: ~₹50/month for 200 orders. Reply in this chat and we'll do it in 30 minutes.
