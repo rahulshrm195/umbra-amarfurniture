@@ -74,45 +74,7 @@ function updateHeaderLinks() {
   }
 }
 
-/* =============================================================
-   MODE / PIN (internal pricing view) — unchanged
-   ============================================================= */
-function setMode(mode) {
-  if (mode === 'internal' && !state.internalUnlocked) {
-    showPinModal();
-    return;
-  }
-  state.mode = mode;
-  document.querySelectorAll('.mode-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.mode === mode);
-  });
-  if (state.finalizedId) renderFinal();
-  else renderList();
-}
 
-function showPinModal() {
-  document.getElementById('pinModal').classList.add('active');
-  document.getElementById('pinInput').value = '';
-  document.getElementById('pinError').textContent = '';
-  setTimeout(() => document.getElementById('pinInput').focus(), 100);
-}
-
-function hidePinModal() {
-  document.getElementById('pinModal').classList.remove('active');
-}
-
-function checkPin() {
-  const v = document.getElementById('pinInput').value;
-  if (v === CONFIG.PIN) {
-    state.internalUnlocked = true;
-    hidePinModal();
-    setMode('internal');
-    toast('Internal mode unlocked');
-  } else {
-    document.getElementById('pinError').textContent = 'Incorrect PIN';
-    document.getElementById('pinInput').value = '';
-  }
-}
 
 /* =============================================================
    INIT — runs once on DOMContentLoaded
@@ -124,11 +86,6 @@ function initApp() {
   // Builder UI wiring
   buildBuilder();
   syncBuilderUI();
-
-  // Mode tabs
-  document.querySelectorAll('.mode-tab').forEach(t => {
-    t.addEventListener('click', () => setMode(t.dataset.mode));
-  });
 
   // Quick-pick sizes
   document.querySelectorAll('.quick-pick button[data-l]').forEach(b => {
@@ -158,17 +115,6 @@ function initApp() {
 
   // Add button
   document.getElementById('addBtn').addEventListener('click', addCombo);
-
-  // PIN modal
-  document.getElementById('pinSubmit').addEventListener('click', checkPin);
-  document.getElementById('pinCancel').addEventListener('click', hidePinModal);
-  document.getElementById('pinInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') checkPin();
-    if (e.key === 'Escape') hidePinModal();
-  });
-  document.getElementById('pinModal').addEventListener('click', e => {
-    if (e.target.id === 'pinModal') hidePinModal();
-  });
 
   // Restore inquiry session from localStorage (cross-visit customer identity)
   restoreInquirySession();

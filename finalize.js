@@ -36,22 +36,9 @@ function renderFinal() {
   if (!dims) { unfinalize(); return; }
 
   const calc = calcCombo(combo, dims.L, dims.W);
-  const isInternal = state.mode === 'internal';
   const custName = (document.getElementById('custName') || {}).value || '';
   const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  const gst = calc.subtotal * (CONFIG.GST_PERCENT / 100);
-  const customerPays = calc.subtotal + gst;
   const woodRate = combo.wood === 'Khair' ? CONFIG.RATES.khairPerCuft : CONFIG.RATES.teakPerCuft;
-
-  let internalHtml = '';
-  if (isInternal) {
-    internalHtml =
-      '<div class="final-internal">' +
-        '<div class="final-internal-row"><span>Subtotal</span><span>' + fmt(calc.subtotal) + '</span></div>' +
-        '<div class="final-internal-row"><span>+ GST ' + CONFIG.GST_PERCENT + '%</span><span>' + fmt(gst) + '</span></div>' +
-        '<div class="final-internal-row heavy"><span>Customer pays</span><span>' + fmt(customerPays) + '</span></div>' +
-      '</div>';
-  }
 
   document.getElementById('finalView').innerHTML =
     '<button class="back-btn" id="backBtn">← Back to comparison</button>' +
@@ -88,14 +75,12 @@ function renderFinal() {
             '<div class="ln-value">' + fmt(calc.polish) + '</div>' +
           '</div>' : '') +
         '<div class="final-total">' +
-          '<div class="tot-label">' + (isInternal ? 'Net (ex-GST)' : 'Total') + '</div>' +
+          '<div class="tot-label">Total</div>' +
           '<div class="tot-value">' + fmt(calc.subtotal) + '</div>' +
         '</div>' +
         '<div class="final-note">' +
-          (isInternal ? '* Net price excludes GST. Customer total shown below.'
-                      : '* GST ' + CONFIG.GST_PERCENT + '% extra. Transport extra. <br><em>GST व ट्रान्सपोर्ट वेगळे · GST और ट्रांसपोर्ट अलग</em>') +
+          '* GST ' + CONFIG.GST_PERCENT + '% extra. Transport extra. <br><em>GST व ट्रान्सपोर्ट वेगळे · GST और ट्रांसपोर्ट अलग</em>' +
         '</div>' +
-        internalHtml +
 
         // PRIMARY action: Place Order
         '<button class="btn btn-primary-action" id="placeOrderBtn">' +

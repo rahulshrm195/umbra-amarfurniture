@@ -129,10 +129,8 @@ function renderList() {
   }
 
   const dims = getDims();
-  const isInternal = state.mode === 'internal';
-
   let html = '<div class="combo-list">' +
-    state.combos.map((c, i) => renderComboCard(c, i, dims, isInternal)).join('') +
+    state.combos.map((c, i) => renderComboCard(c, i, dims)).join('') +
     '</div>';
 
   if (dims) {
@@ -179,7 +177,7 @@ function renderList() {
   });
 }
 
-function renderComboCard(c, idx, dims, isInternal) {
+function renderComboCard(c, idx, dims) {
   const calc = dims ? calcCombo(c, dims.L, dims.W) : null;
   const title = comboTitle(c);
 

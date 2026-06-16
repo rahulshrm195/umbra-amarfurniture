@@ -26,7 +26,6 @@ function shareComparison() {
   if (!dims) { toast('Enter size first'); return; }
 
   const custName = (document.getElementById('custName') || {}).value || '';
-  const isInternal = state.mode === 'internal';
   const lines = [];
 
   lines.push('*✦ AMAR FURNITURE — UMBRA QUOTATION ✦*');
@@ -46,10 +45,7 @@ function shareComparison() {
     if (c.carve) lines.push('  CNC: ' + calc.sqIn + ' sq in × ' + fmt(CONFIG.RATES.cncPerSqIn) + ' = ' + fmt(calc.cnc));
     if (c.polish) lines.push('  Polish: ' + calc.surface + ' sq in × ' + fmt(CONFIG.RATES.polishPerSqIn) + ' = ' + fmt(calc.polish));
     lines.push('  *Total: ' + fmt(calc.subtotal) + '*');
-    if (isInternal) {
-      const gst = calc.subtotal * (CONFIG.GST_PERCENT / 100);
-      lines.push('  +GST ' + CONFIG.GST_PERCENT + '%: ' + fmt(gst) + ' → ' + fmt(calc.subtotal + gst));
-    }
+
   });
 
   lines.push('');
@@ -64,7 +60,6 @@ function shareComparison() {
 
 /* Share a single (finalized) combo as a formatted WhatsApp message. */
 function shareFinal(combo, calc, dims, custName, today) {
-  const isInternal = state.mode === 'internal';
   const gst = calc.subtotal * (CONFIG.GST_PERCENT / 100);
   const lines = [];
 
@@ -85,10 +80,7 @@ function shareFinal(combo, calc, dims, custName, today) {
   if (combo.polish) lines.push('Polish: ' + fmt(calc.polish));
   lines.push('━━━━━━━━━━━━━━━━━━━━');
   lines.push('*TOTAL: ' + fmt(calc.subtotal) + '*');
-  if (isInternal) {
-    lines.push('+ GST ' + CONFIG.GST_PERCENT + '%: ' + fmt(gst));
-    lines.push('*Customer pays: ' + fmt(calc.subtotal + gst) + '*');
-  }
+
   lines.push('');
   lines.push('_GST व ट्रान्सपोर्ट वेगळे · GST and transport extra_');
   lines.push('');

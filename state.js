@@ -8,10 +8,6 @@ const state = {
   // View / routing
   route: 'builder',        // 'builder' | 'orders' | 'admin'
 
-  // Builder mode
-  mode: 'customer',        // 'customer' | 'internal'
-  internalUnlocked: false,
-
   // In-progress combo builder
   builder: { wood: null, height: null, carve: null, polish: null },
 

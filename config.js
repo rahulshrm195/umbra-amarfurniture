@@ -11,9 +11,6 @@ const CONFIG = {
   version: '2.1.0',
   brandShort: 'AMR-UMB',
 
-  // ----- Internal mode PIN (for in-shop pricing breakdown view)
-  PIN: '2580',
-
   // ----- Shop owner WhatsApp number (country code + number, no + or spaces)
   //       Used for the "Send Order to Amar Furniture" button.
   shopWhatsApp: '918275407603',
