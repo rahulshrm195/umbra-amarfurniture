@@ -170,6 +170,14 @@ function initApp() {
     if (e.target.id === 'pinModal') hidePinModal();
   });
 
+  // Restore inquiry session from localStorage (cross-visit customer identity)
+  restoreInquirySession();
+
+  // Add to Cart modal — close on backdrop click
+  document.getElementById('addToCartModal').addEventListener('click', e => {
+    if (e.target.id === 'addToCartModal') closeAddToCartModal();
+  });
+
   // Place Order modal — close on backdrop click
   document.getElementById('placeOrderModal').addEventListener('click', e => {
     if (e.target.id === 'placeOrderModal') closePlaceOrderModal();

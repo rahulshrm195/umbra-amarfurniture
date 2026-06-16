@@ -24,6 +24,14 @@ const state = {
   // Place Order modal
   placeOrderOpen: false,
 
+  // Inquiry (cart session) — persisted in localStorage across visits
+  inquiry: {
+    firestoreId: null,       // Firestore doc id of the active inquiry
+    customerName: null,
+    customerMobile: null,    // normalized 91XXXXXXXXXX
+    capturedAt: null,        // timestamp when customer details were first entered
+  },
+
   // Customer panel
   customer: {
     loggedInMobile: null,    // normalized 91XXXXXXXXXX
@@ -38,6 +46,11 @@ const state = {
     selectedOrderId: null,
     statusFilter: 'all',
     searchQuery: '',
+    activeTab: 'orders',     // 'orders' | 'inquiries'
+    inquiries: [],
+    selectedInquiryId: null,
+    inquiryStatusFilter: 'all',
+    inquirySearchQuery: '',
   },
 };
 

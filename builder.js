@@ -86,16 +86,29 @@ function addCombo() {
     toast('Pick all four options first');
     return;
   }
-  if (!state.quoteId) {
-    state.quoteId = generateOrderNo();
+  const pendingCombo = { wood: b.wood, height: b.height, carve: b.carve, polish: b.polish };
+  // If we don't know the customer yet — show identity modal first
+  if (!inquiryIdentityKnown()) {
+    openAddToCartModal(pendingCombo);
+    return;
   }
+  doAddCombo(pendingCombo);
+}
+
+/* The actual combo addition — called after identity is confirmed */
+async function doAddCombo(pendingCombo) {
+  if (!state.quoteId) state.quoteId = generateOrderNo();
   state.combos.push({
     id: state.nextId++,
-    wood: b.wood, height: b.height, carve: b.carve, polish: b.polish,
+    wood: pendingCombo.wood, height: pendingCombo.height,
+    carve: pendingCombo.carve, polish: pendingCombo.polish,
   });
   resetBuilder();
   renderList();
-  toast('Added combination #' + state.combos.length);
+  toast('Added to cart ✓');
+  // Sync to Firestore inquiry (non-blocking)
+  const dims = getDims();
+  syncInquiryToFirestore(state.combos, dims).catch(() => {});
 }
 
 function renderList() {
@@ -110,7 +123,7 @@ function renderList() {
     body.innerHTML =
       '<div class="empty-state">' +
       '<div class="empty-icon">◇</div>' +
-      'No combinations yet.<br>Build one above and tap "Add to List".' +
+      'No combinations yet.<br>Build a combo above and tap <strong>Add to Cart</strong> to save it.' +
       '</div>';
     return;
   }

@@ -281,6 +281,8 @@ async function submitPlaceOrder() {
 
     recordDeviceOrder();
     state.placedOrder = order;
+    // Link inquiry to order (non-blocking)
+    linkInquiryToOrder(order.orderNo).catch(() => {});
     closePlaceOrderModal();
     renderOrderConfirmation();
 

@@ -183,6 +183,130 @@ async function updateOrderNotes(id, notes) {
    ADMIN AUTH
    ============================================================= */
 
+/* =============================================================
+   INQUIRIES — ADMIN CRUD
+   ============================================================= */
+
+async function getAllInquiries(statusFilter) {
+  if (!_fbReady) throw new Error('Firebase not ready');
+  const SDK = window.firebaseSDK;
+
+  const colRef = SDK.collection(_db, INQUIRY_COLLECTION);
+  let q;
+  if (statusFilter && statusFilter !== 'all') {
+    q = SDK.query(colRef, SDK.where('status', '==', statusFilter), SDK.orderBy('createdAt', 'desc'));
+  } else {
+    q = SDK.query(colRef, SDK.orderBy('createdAt', 'desc'));
+  }
+
+  const snap = await SDK.getDocs(q);
+  const inquiries = [];
+  snap.forEach(d => inquiries.push({ id: d.id, ...d.data() }));
+  return inquiries;
+}
+
+async function updateInquiryStatus(id, newStatus) {
+  if (!_fbReady) throw new Error('Firebase not ready');
+  if (!state.admin.user) throw new Error('Admin not authenticated');
+  const SDK = window.firebaseSDK;
+
+  const docRef = SDK.doc(_db, INQUIRY_COLLECTION, id);
+  const snap = await SDK.getDoc(docRef);
+  if (!snap.exists()) throw new Error('Inquiry not found');
+
+  const current = snap.data();
+  const now = Date.now();
+  const history = (current.statusHistory || []).concat([{
+    status: newStatus,
+    at: now,
+    by: state.admin.user.email || 'admin',
+  }]);
+
+  await SDK.updateDoc(docRef, {
+    status: newStatus,
+    statusHistory: history,
+    updatedAt: now,
+  });
+}
+
+async function updateInquiryNotes(id, notes) {
+  if (!_fbReady) throw new Error('Firebase not ready');
+  if (!state.admin.user) throw new Error('Admin not authenticated');
+  const SDK = window.firebaseSDK;
+
+  const docRef = SDK.doc(_db, INQUIRY_COLLECTION, id);
+  await SDK.updateDoc(docRef, {
+    internalNotes: notes || '',
+    updatedAt: Date.now(),
+  });
+}
+
+/* Convert an inquiry to an order — picks a specific combo, creates order */
+async function convertInquiryToOrder(inquiryId, selectedCombo, dimensions) {
+  if (!_fbReady) throw new Error('Firebase not ready');
+  if (!state.admin.user) throw new Error('Admin not authenticated');
+  const SDK = window.firebaseSDK;
+
+  // Fetch inquiry
+  const inqRef = SDK.doc(_db, INQUIRY_COLLECTION, inquiryId);
+  const inqSnap = await SDK.getDoc(inqRef);
+  if (!inqSnap.exists()) throw new Error('Inquiry not found');
+  const inq = inqSnap.data();
+
+  // Calculate pricing from the selected combo + stored dimensions
+  const dims = dimensions || inq.dimensions;
+  if (!dims) throw new Error('No dimensions stored on inquiry');
+
+  const calc = calcCombo(selectedCombo, dims.L, dims.W);
+  const orderNo = generateOrderNo();
+  const now = Date.now();
+
+  // Create order
+  const order = {
+    orderNo,
+    customerName: inq.customerName,
+    customerMobile: inq.customerMobile,
+    customerNote: 'Converted from enquiry by admin.',
+    spec: {
+      wood: selectedCombo.wood,
+      height: selectedCombo.height,
+      carve: selectedCombo.carve,
+      polish: selectedCombo.polish,
+    },
+    dimensions: dims,
+    pricing: {
+      wood: calc.wood,
+      cnc: calc.cnc,
+      polish: calc.polish,
+      subtotal: calc.subtotal,
+    },
+    status: 'confirmed',
+    statusHistory: [
+      { status: 'confirmed', at: now, by: state.admin.user.email || 'admin' }
+    ],
+    internalNotes: 'Created from enquiry ' + inquiryId,
+    linkedInquiryId: inquiryId,
+    deviceId: inq.deviceId || '',
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  const ordersRef = SDK.collection(_db, FIRESTORE_COLLECTION);
+  const orderRef = await SDK.addDoc(ordersRef, order);
+
+  // Update inquiry: mark converted, link order
+  const historyEntry = { status: 'converted', at: now, by: state.admin.user.email || 'admin' };
+  await SDK.updateDoc(inqRef, {
+    status: 'converted',
+    linkedOrderNo: orderNo,
+    linkedOrderId: orderRef.id,
+    statusHistory: (inq.statusHistory || []).concat([historyEntry]),
+    updatedAt: now,
+  });
+
+  return { id: orderRef.id, ...order };
+}
+
 async function adminSignIn(email, password) {
   if (!_fbReady) throw new Error('Firebase not ready');
   const SDK = window.firebaseSDK;

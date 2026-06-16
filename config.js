@@ -8,7 +8,7 @@
 const CONFIG = {
 
   // ----- App version
-  version: '2.0.0',
+  version: '2.1.0',
   brandShort: 'AMR-UMB',
 
   // ----- Internal mode PIN (for in-shop pricing breakdown view)
@@ -54,3 +54,4 @@ const FIREBASE_CONFIG = {
 };
 
 const FIRESTORE_COLLECTION = 'umbra_orders';
+const INQUIRY_COLLECTION = 'umbra_inquiries';
