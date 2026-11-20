@@ -6,6 +6,12 @@ Do these **in order** after deploying the code. Total time ≈ 25 minutes.
 
 ## ✅ Step 1: Firestore Security Rules
 
+> **⚠️ Outdated (v2.2.0):** the rules block below is superseded. The `request.query.where` check it uses
+> does not exist in Firestore, and the deployed rule let anyone read every order. The current, tested
+> rules for all Amar Furniture apps live in **`firestore.rules` in the `lathepro-amar` repo** —
+> umbra orders are listable only by the admin, and customers find their orders through
+> `umbra_lookup/{mobile}/orders/{orderId}`.
+
 Go to: **Firebase Console → amar-furniture-e4782 → Firestore Database → Rules tab**
 
 Paste this **entire block** (replaces whatever is there now — make sure you don't clobber rules for other collections used by your other Amar Furniture apps; if you already have rules for `quotes`, `lathepro_quotes`, etc., keep them and just **add the `umbra_orders` block**):

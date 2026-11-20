@@ -90,14 +90,73 @@ async function createOrder(orderData) {
 
   const colRef = SDK.collection(_db, FIRESTORE_COLLECTION);
   const docRef = await SDK.addDoc(colRef, doc);
+  await addOrderLookup(doc.customerMobile, docRef.id, now);
 
   return { id: docRef.id, ...doc };
+}
+
+/* =============================================================
+   ORDER LOOKUP BY MOBILE
+   Each order is also filed under umbra_lookup/{mobile}/orders/{orderId}.
+   Firestore rules let anyone list ONE mobile's folder and fetch an order
+   by its (unguessable) id, but nobody except the admin can list all
+   orders — so customers can't download everyone's names and numbers.
+   ============================================================= */
+const LOOKUP_COLLECTION = 'umbra_lookup';
+
+/* File an order under its mobile number. Never throws: a failed lookup
+   write must not block the order (the admin backfill repairs it). */
+async function addOrderLookup(mobile, orderId, createdAt) {
+  try {
+    const SDK = window.firebaseSDK;
+    await SDK.setDoc(SDK.doc(_db, LOOKUP_COLLECTION, mobile, 'orders', orderId),
+      { orderId: orderId, createdAt: createdAt || Date.now() });
+  } catch (err) {
+    console.warn('Order lookup write failed (admin backfill will repair):', err);
+  }
+}
+
+/* Admin: make sure every order has a lookup entry (covers orders placed
+   before this existed). Remembers done ids per device so it's cheap. */
+async function backfillOrderLookups(orders) {
+  if (!state.admin.user || !orders || !orders.length) return;
+  const KEY = 'umbra_lookup_backfilled_v1';
+  let done;
+  try { done = new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch (e) { done = new Set(); }
+  const SDK = window.firebaseSDK;
+  let changed = false;
+  for (const o of orders) {
+    if (done.has(o.id) || !o.customerMobile) continue;
+    try {
+      await SDK.setDoc(SDK.doc(_db, LOOKUP_COLLECTION, o.customerMobile, 'orders', o.id),
+        { orderId: o.id, createdAt: o.createdAt || Date.now() });
+      done.add(o.id); changed = true;
+    } catch (err) {
+      console.warn('Lookup backfill stopped (are the new Firestore rules published?):', err);
+      break;
+    }
+  }
+  if (changed) { try { localStorage.setItem(KEY, JSON.stringify([...done])); } catch (e) {} }
 }
 
 /* Get all orders for a given normalized mobile number */
 async function getOrdersByMobile(normalizedMobile) {
   if (!_fbReady) throw new Error('Firebase not ready');
   const SDK = window.firebaseSDK;
+
+  // New path: list this mobile's lookup folder, then fetch each order by id
+  try {
+    const lookSnap = await SDK.getDocs(SDK.collection(_db, LOOKUP_COLLECTION, normalizedMobile, 'orders'));
+    const ids = [];
+    lookSnap.forEach(d => ids.push(d.id));
+    const snaps = await Promise.all(ids.map(id => SDK.getDoc(SDK.doc(_db, FIRESTORE_COLLECTION, id))));
+    const orders = snaps.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() }));
+    orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    return orders;
+  } catch (err) {
+    // Rules not published yet → fall back to the old query below
+    console.warn('Lookup read failed, using legacy query:', err && err.code);
+  }
 
   const colRef = SDK.collection(_db, FIRESTORE_COLLECTION);
   const q = SDK.query(
@@ -293,6 +352,7 @@ async function convertInquiryToOrder(inquiryId, selectedCombo, dimensions) {
 
   const ordersRef = SDK.collection(_db, FIRESTORE_COLLECTION);
   const orderRef = await SDK.addDoc(ordersRef, order);
+  await addOrderLookup(order.customerMobile, orderRef.id, now);
 
   // Update inquiry: mark converted, link order
   const historyEntry = { status: 'converted', at: now, by: state.admin.user.email || 'admin' };

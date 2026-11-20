@@ -104,6 +104,7 @@ async function refreshAdminOrders() {
     ]);
     state.admin.orders = orders;
     state.admin.inquiries = inquiries;
+    backfillOrderLookups(orders); // fire-and-forget
   } catch (err) {
     console.error('Failed to load admin data:', err);
     toast('Could not load data');
