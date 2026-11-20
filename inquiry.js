@@ -196,9 +196,31 @@ async function syncInquiryToFirestore(combos, dims) {
   const SDK = window.firebaseSDK;
   if (!SDK) return;
 
+  // An inquiry the admin already marked converted/lost (or deleted) can't be updated
+  // by the customer any more — start a fresh one instead (at most once per sync).
+  if (state.inquiry.firestoreId) {
+    try {
+      const docRef = SDK.doc(_db, INQUIRY_COLLECTION, state.inquiry.firestoreId);
+      await SDK.updateDoc(docRef, {
+        combos: comboSnapshots,
+        dimensions: dimensions,
+        updatedAt: now,
+      });
+      return;
+    } catch (err) {
+      if (err && (err.code === 'permission-denied' || err.code === 'not-found')) {
+        state.inquiry.firestoreId = null;
+        saveInquirySession();
+      } else {
+        console.warn('Inquiry sync failed (non-critical):', err);
+        return;
+      }
+    }
+  }
+
   try {
     if (!state.inquiry.firestoreId) {
-      // First combo — create new inquiry
+      // First combo (or previous inquiry closed) — create new inquiry
       const colRef = SDK.collection(_db, INQUIRY_COLLECTION);
       const docRef = await SDK.addDoc(colRef, {
         customerName: state.inquiry.customerName,
@@ -215,14 +237,6 @@ async function syncInquiryToFirestore(combos, dims) {
       });
       state.inquiry.firestoreId = docRef.id;
       saveInquirySession();
-    } else {
-      // Subsequent adds — update combos list
-      const docRef = SDK.doc(_db, INQUIRY_COLLECTION, state.inquiry.firestoreId);
-      await SDK.updateDoc(docRef, {
-        combos: comboSnapshots,
-        dimensions: dimensions,
-        updatedAt: now,
-      });
     }
   } catch (err) {
     console.warn('Inquiry sync failed (non-critical):', err);
@@ -231,25 +245,22 @@ async function syncInquiryToFirestore(combos, dims) {
 }
 
 /* Called when an order is placed — links order to inquiry */
-async function linkInquiryToOrder(orderNo) {
+async function linkInquiryToOrder(orderNo, orderId) {
   if (!state.inquiry.firestoreId) return;
   if (!fbReady()) return;
   const SDK = window.firebaseSDK;
   if (!SDK) return;
 
   try {
+    // Customers can't read inquiries (privacy), so append the history entry with
+    // arrayUnion instead of read-modify-write. Rules verify the linked order exists.
     const docRef = SDK.doc(_db, INQUIRY_COLLECTION, state.inquiry.firestoreId);
-    const snap = await SDK.getDoc(docRef);
-    if (!snap.exists()) return;
-    const current = snap.data();
     const now = Date.now();
-    const history = (current.statusHistory || []).concat([
-      { status: 'converted', at: now, by: 'customer' }
-    ]);
     await SDK.updateDoc(docRef, {
       status: 'converted',
       linkedOrderNo: orderNo,
-      statusHistory: history,
+      linkedOrderId: orderId,
+      statusHistory: SDK.arrayUnion({ status: 'converted', at: now, by: 'customer' }),
       updatedAt: now,
     });
   } catch (err) {

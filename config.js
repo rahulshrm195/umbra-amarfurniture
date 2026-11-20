@@ -8,7 +8,7 @@
 const CONFIG = {
 
   // ----- App version
-  version: '2.2.0',
+  version: '2.2.1',
   brandShort: 'AMR-UMB',
 
   // ----- Shop owner WhatsApp number (country code + number, no + or spaces)

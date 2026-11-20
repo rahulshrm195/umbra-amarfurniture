@@ -29,7 +29,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
   import {
     getFirestore, collection, addDoc, doc, getDoc, getDocs,
-    query, where, orderBy, updateDoc, setDoc, serverTimestamp, Timestamp
+    query, where, orderBy, updateDoc, setDoc, arrayUnion, serverTimestamp, Timestamp
   } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
   import {
     getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
@@ -41,7 +41,7 @@
   window.firebaseSDK = {
     initializeApp,
     getFirestore, collection, addDoc, doc, getDoc, getDocs,
-    query, where, orderBy, updateDoc, setDoc, serverTimestamp, Timestamp,
+    query, where, orderBy, updateDoc, setDoc, arrayUnion, serverTimestamp, Timestamp,
     getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
     initializeAppCheck, ReCaptchaV3Provider,
   };
